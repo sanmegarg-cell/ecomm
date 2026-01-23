@@ -1,5 +1,6 @@
 import { ProductCard, Product } from './ProductCard';
-import { Filter } from 'lucide-react';
+import { ProductCardSkeleton } from './ProductCardSkeleton';
+import { Filter, Search } from 'lucide-react';
 
 interface ProductGridProps {
   products: Product[];
@@ -10,6 +11,7 @@ interface ProductGridProps {
   selectedCategory?: string;
   onMobileFilterClick?: () => void;
   onViewDetails: (product: Product) => void;
+  isLoading?: boolean;
 }
 
 export function ProductGrid({ 
@@ -20,7 +22,8 @@ export function ProductGrid({
   searchQuery,
   selectedCategory,
   onMobileFilterClick,
-  onViewDetails
+  onViewDetails,
+  isLoading = false
 }: ProductGridProps) {
   return (
     <section className="flex-1 py-12 sm:py-16">
@@ -46,9 +49,49 @@ export function ProductGrid({
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8">
-        {products.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No products found matching your criteria.
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-16 px-4">
+            <div className="max-w-md mx-auto">
+              <div className="mb-6 flex justify-center">
+                <div className="p-4 bg-gray-100 rounded-full">
+                  <Search className="w-12 h-12 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {searchQuery 
+                  ? `We couldn't find any products matching "${searchQuery}". Try adjusting your search or filters.`
+                  : selectedCategory && selectedCategory !== 'all'
+                  ? `No products found in this category. Try selecting a different category.`
+                  : 'No products match your current filters. Try adjusting your search criteria.'}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {searchQuery && (
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors"
+                  >
+                    Clear Search
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    if (onMobileFilterClick) onMobileFilterClick();
+                  }}
+                  className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Adjust Filters
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

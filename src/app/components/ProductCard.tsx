@@ -54,7 +54,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishli
             e.stopPropagation();
             onToggleWishlist(product);
           }}
-          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+          className="absolute top-3 right-3 p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-full shadow-md hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
           aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
         >
           <Heart 
@@ -95,10 +95,11 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishli
               e.stopPropagation();
               onAddToCart(product);
             }}
-            className="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-2"
+            className="bg-slate-700 text-white px-4 py-2.5 sm:py-2 rounded-lg hover:bg-slate-800 active:bg-slate-900 transition-colors flex items-center gap-2 touch-manipulation min-h-[44px] sm:min-h-0"
           >
-            <ShoppingCart className="w-4 h-4" />
+            <ShoppingCart className="w-4 h-4 sm:w-4" />
             <span className="hidden sm:inline">Add</span>
+            <span className="sm:hidden text-sm font-medium">Add to Cart</span>
           </button>
         </div>
       </div>

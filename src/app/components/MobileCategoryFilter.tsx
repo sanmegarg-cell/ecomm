@@ -37,7 +37,7 @@ export function MobileCategoryFilter({
       />
 
       {/* Mobile Filter Panel */}
-      <div className="fixed left-0 top-0 h-full w-80 bg-white z-50 shadow-2xl">
+      <div className="fixed left-0 top-0 h-full w-80 bg-white z-50 shadow-2xl animate-in slide-in-from-left">
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
             <Filter className="w-5 h-5" />
@@ -55,10 +55,10 @@ export function MobileCategoryFilter({
         <div className="p-4 space-y-2">
           <button
             onClick={() => handleSelect('all')}
-            className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+            className={`w-full text-left px-4 py-4 rounded-lg transition-colors touch-manipulation min-h-[48px] ${
               selectedCategory === 'all'
                 ? 'bg-slate-700 text-white'
-                : 'hover:bg-gray-100 text-gray-700'
+                : 'hover:bg-gray-100 active:bg-gray-200 text-gray-700'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -73,10 +73,10 @@ export function MobileCategoryFilter({
             <button
               key={category.id}
               onClick={() => handleSelect(category.id)}
-              className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+              className={`w-full text-left px-4 py-4 rounded-lg transition-colors touch-manipulation min-h-[48px] ${
                 selectedCategory === category.id
                 ? 'bg-slate-700 text-white'
-                  : 'hover:bg-gray-100 text-gray-700'
+                  : 'hover:bg-gray-100 active:bg-gray-200 text-gray-700'
               }`}
             >
               <div className="flex items-center justify-between">

@@ -1,4 +1,4 @@
-import { X, Minus, Plus, Trash2 } from 'lucide-react';
+import { X, Minus, Plus, Trash2, ShoppingCart } from 'lucide-react';
 import { Product } from './ProductCard';
 
 export interface CartItem extends Product {
@@ -43,8 +43,24 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }:
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {items.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              Your cart is empty
+            <div className="flex flex-col items-center justify-center h-full py-12 px-4">
+              <div className="mb-6">
+                <div className="p-6 bg-gray-100 rounded-full mb-4">
+                  <ShoppingCart className="w-16 h-16 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                Your cart is empty
+              </h3>
+              <p className="text-gray-600 text-center mb-6 max-w-sm">
+                Looks like you haven't added anything to your cart yet. Start shopping to fill it up!
+              </p>
+              <button
+                onClick={onClose}
+                className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Start Shopping
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -61,23 +77,26 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }:
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                        className="p-1 hover:bg-gray-100 rounded"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
                         disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
                       >
-                        <Minus className="w-4 h-4" />
+                        <Minus className="w-5 h-5" />
                       </button>
-                      <span className="text-sm w-8 text-center">{item.quantity}</span>
+                      <span className="text-base font-semibold w-12 text-center">{item.quantity}</span>
                       <button
                         onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                        className="p-1 hover:bg-gray-100 rounded"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
+                        aria-label="Increase quantity"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => onRemoveItem(item.id)}
-                        className="ml-auto p-1 hover:bg-red-50 rounded text-red-600"
+                        className="ml-auto p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-red-50 rounded-lg text-red-600 transition-colors touch-manipulation"
+                        aria-label="Remove item"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -94,7 +113,7 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }:
               <span className="text-lg">Total</span>
               <span className="text-2xl">${total.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-800 transition-colors">
+            <button className="w-full bg-slate-700 text-white py-4 rounded-lg hover:bg-slate-800 transition-colors text-base font-semibold touch-manipulation min-h-[48px]">
               Checkout
             </button>
           </div>

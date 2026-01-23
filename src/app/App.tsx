@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
+import { toast } from 'sonner';
 import { Header } from '@/app/components/Header';
 import { Hero } from '@/app/components/Hero';
 import { ProductGrid } from '@/app/components/ProductGrid';
@@ -8,6 +9,7 @@ import { Cart, CartItem } from '@/app/components/Cart';
 import { Wishlist } from '@/app/components/Wishlist';
 import { CategoryPanel, Category } from '@/app/components/CategoryPanel';
 import { MobileCategoryFilter } from '@/app/components/MobileCategoryFilter';
+import { MobileBottomNav } from '@/app/components/MobileBottomNav';
 import { ProductDetailPage } from '@/app/components/ProductDetailPage';
 import { Footer } from '@/app/components/Footer';
 import { Product } from '@/app/components/ProductCard';
@@ -262,40 +264,112 @@ function Home({
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.id === product.id);
       if (existingItem) {
-        return prev.map((item) =>
+        const updated = prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+        toast.success(`${product.name} quantity updated!`, {
+          description: `Quantity: ${existingItem.quantity + 1}`,
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+        setCartOpen(true);
+        return updated;
       }
+      toast.success(`${product.name} added to cart!`, {
+        description: 'Item has been added to your shopping cart.',
+        style: {
+          background: '#475569',
+          color: '#ffffff',
+          border: '1px solid #334155',
+        },
+      });
+      setCartOpen(true);
       return [...prev, { ...product, quantity: 1 }];
     });
-    setCartOpen(true);
   };
 
   const handleUpdateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+    setCartItems((prev) => {
+      const item = prev.find((item) => item.id === id);
+      const updated = prev.map((item) => (item.id === id ? { ...item, quantity } : item));
+      if (item) {
+        toast.info(`Quantity updated to ${quantity}`, {
+          description: item.name,
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+      }
+      return updated;
+    });
   };
 
   const handleRemoveItem = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => {
+      const item = prev.find((item) => item.id !== id);
+      if (item) {
+        toast.success(`${item.name} removed from cart`, {
+          description: 'Item has been removed from your shopping cart.',
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems((prev) => {
       const exists = prev.find((item) => item.id === product.id);
       if (exists) {
+        toast.success(`${product.name} removed from wishlist`, {
+          description: 'Item has been removed from your wishlist.',
+          style: {
+            background: '#f59e0b',
+            color: '#ffffff',
+            border: '1px solid #d97706',
+          },
+        });
         return prev.filter((item) => item.id !== product.id);
       }
+      toast.success(`${product.name} added to wishlist!`, {
+        description: 'Item has been added to your wishlist.',
+        style: {
+          background: '#f59e0b',
+          color: '#ffffff',
+          border: '1px solid #d97706',
+        },
+      });
       return [...prev, product];
     });
   };
 
   const handleRemoveFromWishlist = (id: number) => {
-    setWishlistItems((prev) => prev.filter((item) => item.id !== id));
+    setWishlistItems((prev) => {
+      const item = prev.find((item) => item.id !== id);
+      if (item) {
+        toast.success(`${item.name} removed from wishlist`, {
+          description: 'Item has been removed from your wishlist.',
+          style: {
+            background: '#f59e0b',
+            color: '#ffffff',
+            border: '1px solid #d97706',
+          },
+        });
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const handleViewDetails = (product: Product) => {
@@ -306,12 +380,14 @@ function Home({
   const wishlistIds = new Set(wishlistItems.map((item) => item.id));
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 lg:pb-0">
       <Header
         cartItemCount={totalItems}
         wishlistItemCount={wishlistItems.length}
         onCartClick={() => setCartOpen(true)}
         onWishlistClick={() => setWishlistOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       <CategoryPanel
         categories={categories}
@@ -345,6 +421,16 @@ function Home({
         </div>
       </div>
       <Footer />
+      <MobileBottomNav
+        cartItemCount={totalItems}
+        wishlistItemCount={wishlistItems.length}
+        onCartClick={() => setCartOpen(true)}
+        onWishlistClick={() => setWishlistOpen(true)}
+        onSearchClick={() => {
+          // Scroll to top and focus search if available
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
       <Cart
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
@@ -383,46 +469,171 @@ function Home({
 
 // Main App component with routing
 export default function App() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  // Load cart and wishlist from localStorage on mount
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    try {
+      const savedCart = localStorage.getItem('dreamweave_cart');
+      if (savedCart) {
+        const parsed = JSON.parse(savedCart);
+        // Validate that it's an array
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+      return [];
+    } catch (error) {
+      console.error('Error loading cart from localStorage:', error);
+      // Clear invalid data
+      localStorage.removeItem('dreamweave_cart');
+      return [];
+    }
+  });
+
+  const [wishlistItems, setWishlistItems] = useState<Product[]>(() => {
+    try {
+      const savedWishlist = localStorage.getItem('dreamweave_wishlist');
+      if (savedWishlist) {
+        const parsed = JSON.parse(savedWishlist);
+        // Validate that it's an array
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+      return [];
+    } catch (error) {
+      console.error('Error loading wishlist from localStorage:', error);
+      // Clear invalid data
+      localStorage.removeItem('dreamweave_wishlist');
+      return [];
+    }
+  });
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('dreamweave_cart', JSON.stringify(cartItems));
+    } catch (error) {
+      console.error('Error saving cart to localStorage:', error);
+    }
+  }, [cartItems]);
+
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('dreamweave_wishlist', JSON.stringify(wishlistItems));
+    } catch (error) {
+      console.error('Error saving wishlist to localStorage:', error);
+    }
+  }, [wishlistItems]);
 
   const handleAddToCart = (product: Product, sheetType?: string) => {
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.id === product.id);
       if (existingItem) {
-        return prev.map((item) =>
+        const updated = prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+        toast.success(`${product.name} quantity updated in cart!`, {
+          description: `Quantity: ${existingItem.quantity + 1}`,
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+        return updated;
       }
+      toast.success(`${product.name} added to cart!`, {
+        description: 'Item has been added to your shopping cart.',
+        style: {
+          background: '#475569',
+          color: '#ffffff',
+          border: '1px solid #334155',
+        },
+      });
       return [...prev, { ...product, quantity: 1 }];
     });
   };
 
   const handleUpdateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+    setCartItems((prev) => {
+      const item = prev.find((item) => item.id === id);
+      const updated = prev.map((item) => (item.id === id ? { ...item, quantity } : item));
+      if (item) {
+        toast.info(`Quantity updated to ${quantity}`, {
+          description: item.name,
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+      }
+      return updated;
+    });
   };
 
   const handleRemoveItem = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => {
+      const item = prev.find((item) => item.id !== id);
+      if (item) {
+        toast.success(`${item.name} removed from cart`, {
+          description: 'Item has been removed from your shopping cart.',
+          style: {
+            background: '#475569',
+            color: '#ffffff',
+            border: '1px solid #334155',
+          },
+        });
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems((prev) => {
       const exists = prev.find((item) => item.id === product.id);
       if (exists) {
+        toast.success(`${product.name} removed from wishlist`, {
+          description: 'Item has been removed from your wishlist.',
+          style: {
+            background: '#f59e0b',
+            color: '#ffffff',
+            border: '1px solid #d97706',
+          },
+        });
         return prev.filter((item) => item.id !== product.id);
       }
+      toast.success(`${product.name} added to wishlist!`, {
+        description: 'Item has been added to your wishlist.',
+        style: {
+          background: '#f59e0b',
+          color: '#ffffff',
+          border: '1px solid #d97706',
+        },
+      });
       return [...prev, product];
     });
   };
 
   const handleRemoveFromWishlist = (id: number) => {
-    setWishlistItems((prev) => prev.filter((item) => item.id !== id));
+    setWishlistItems((prev) => {
+      const item = prev.find((item) => item.id !== id);
+      if (item) {
+        toast.success(`${item.name} removed from wishlist`, {
+          description: 'Item has been removed from your wishlist.',
+          style: {
+            background: '#f59e0b',
+            color: '#ffffff',
+            border: '1px solid #d97706',
+          },
+        });
+      }
+      return prev.filter((item) => item.id !== id);
+    });
   };
 
   const wishlistIds = new Set(wishlistItems.map((item) => item.id));

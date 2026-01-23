@@ -1,4 +1,4 @@
-import { X, ShoppingCart, Trash2 } from 'lucide-react';
+import { X, ShoppingCart, Trash2, Heart } from 'lucide-react';
 import { Product } from './ProductCard';
 
 interface WishlistProps {
@@ -37,8 +37,24 @@ export function Wishlist({ isOpen, onClose, items, onRemoveItem, onAddToCart }: 
         {/* Wishlist Items */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {items.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              Your wishlist is empty
+            <div className="flex flex-col items-center justify-center h-full py-12 px-4">
+              <div className="mb-6">
+                <div className="p-6 bg-pink-50 rounded-full mb-4">
+                  <Heart className="w-16 h-16 text-pink-300" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                Your wishlist is empty
+              </h3>
+              <p className="text-gray-600 text-center mb-6 max-w-sm">
+                Save your favorite products here! Click the heart icon on any product to add it to your wishlist.
+              </p>
+              <button
+                onClick={onClose}
+                className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Browse Products
+              </button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -59,17 +75,17 @@ export function Wishlist({ isOpen, onClose, items, onRemoveItem, onAddToCart }: 
                           onAddToCart(item);
                           onRemoveItem(item.id);
                         }}
-                        className="flex items-center gap-1 bg-slate-700 text-white px-3 py-1 rounded text-sm hover:bg-slate-800 transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 bg-slate-700 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors touch-manipulation min-h-[44px]"
                       >
-                        <ShoppingCart className="w-3 h-3" />
+                        <ShoppingCart className="w-4 h-4" />
                         <span>Add to Cart</span>
                       </button>
                       <button
                         onClick={() => onRemoveItem(item.id)}
-                        className="p-1 hover:bg-red-50 rounded text-red-600"
+                        className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-red-50 rounded-lg text-red-600 transition-colors touch-manipulation"
                         aria-label="Remove from wishlist"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
