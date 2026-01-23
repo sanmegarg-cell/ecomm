@@ -148,7 +148,7 @@ export function ProductDetailPage({
           <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
           <button
             onClick={() => navigate('/')}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            className="bg-slate-700 text-white px-6 py-2 rounded-lg hover:bg-slate-800 transition-colors"
           >
             Go Back Home
           </button>
@@ -331,7 +331,7 @@ export function ProductDetailPage({
             <div className="space-y-4 pt-6 border-t">
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-blue-500 text-white px-8 py-5 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-3 text-xl"
+                className="w-full bg-slate-700 text-white px-8 py-5 rounded-lg hover:bg-slate-800 transition-colors flex items-center justify-center gap-3 text-xl"
               >
                 <ShoppingCart className="w-6 h-6" />
                 Add to Cart
@@ -397,7 +397,7 @@ export function ProductDetailPage({
       {showScrollToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          className="fixed bottom-6 right-6 z-50 p-3 bg-slate-700 text-white rounded-full shadow-lg hover:bg-slate-800 transition-colors"
           aria-label="Scroll to top"
         >
           <ArrowUp className="w-5 h-5" />

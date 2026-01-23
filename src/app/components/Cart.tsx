@@ -94,7 +94,7 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }:
               <span className="text-lg">Total</span>
               <span className="text-2xl">${total.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors">
+            <button className="w-full bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-800 transition-colors">
               Checkout
             </button>
           </div>

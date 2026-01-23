@@ -59,7 +59,7 @@ export function Wishlist({ isOpen, onClose, items, onRemoveItem, onAddToCart }: 
                           onAddToCart(item);
                           onRemoveItem(item.id);
                         }}
-                        className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
+                        className="flex items-center gap-1 bg-slate-700 text-white px-3 py-1 rounded text-sm hover:bg-slate-800 transition-colors"
                       >
                         <ShoppingCart className="w-3 h-3" />
                         <span>Add to Cart</span>

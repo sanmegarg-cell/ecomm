@@ -24,6 +24,7 @@ const products: Product[] = [
     ],
     material: '100% Egyptian Cotton',
     threadCount: 800,
+    sheetType: 'flat',
     rating: 4.5,
     reviews: [
       { id: 1, author: 'Sarah M.', text: 'Amazing quality and very comfortable!', rating: 5 },
@@ -37,6 +38,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1568305427839-b16e35fe0072?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmV5JTIwYmVkJTIwc2hlZXRzfGVufDF8fHx8MTc2OTExNDQxMHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Organic Cotton',
     threadCount: 1000,
+    sheetType: 'fitted',
     rating: 4.8,
     reviews: [
       { id: 3, author: 'Emily T.', text: 'Love the premium feel', rating: 5 },
@@ -51,6 +53,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1759176171634-674f37841636?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibHVlJTIwYmVkZGluZyUyMGJlZHJvb218ZW58MXx8fHwxNzY5MTE0NDEwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Silk Blend',
     threadCount: 900,
+    sheetType: 'flat',
     rating: 5,
     reviews: [
       { id: 6, author: 'Alex P.', text: 'Simply luxurious!', rating: 5 },
@@ -64,6 +67,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1636892843533-d2cefbd4b507?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWlnZSUyMGJlZCUyMHNoZWV0c3xlbnwxfHx8fDE3NjkxMTQ0MTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Premium Linen',
     threadCount: 750,
+    sheetType: 'fitted',
     rating: 4.3,
     reviews: [
       { id: 8, author: 'David H.', text: 'Very comfortable and warm', rating: 4 },
@@ -78,6 +82,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1668089677938-b52086753f77?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBiZWRyb29tJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzY5MDcyMzc4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Bamboo Cotton',
     threadCount: 850,
+    sheetType: 'flat',
     rating: 4.6,
     reviews: [
       { id: 11, author: 'Tom S.', text: 'Elegant and sophisticated', rating: 5 },
@@ -91,6 +96,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1766928210443-0be92ed5884a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBiZWQlMjBzaGVldHMlMjBiZWRyb29tfGVufDF8fHx8MTc2OTExNDQwOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Pure Silk',
     threadCount: 950,
+    sheetType: 'fitted',
     rating: 4.9,
     reviews: [
       { id: 13, author: 'Victoria K.', text: 'Pure luxury at its finest', rating: 5 },
@@ -105,6 +111,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1542716507-9c9c00501321?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGl0ZSUyMGJlZCUyMGxpbmVufGVufDF8fHx8MTc2OTA1MTc3OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Organic Linen',
     threadCount: 700,
+    sheetType: 'flat',
     rating: 4.4,
     reviews: [
       { id: 16, author: 'Oliver C.', text: 'Natural and comfortable', rating: 4 },
@@ -118,6 +125,7 @@ const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1568305427839-b16e35fe0072?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmV5JTIwYmVkJTIwc2hlZXRzfGVufDF8fHx8MTc2OTExNDQxMHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     material: 'Cotton Sateen',
     threadCount: 820,
+    sheetType: 'fitted',
     rating: 4.7,
     reviews: [
       { id: 18, author: 'Grace H.', text: 'Beautiful color and soft', rating: 5 },
@@ -144,9 +152,26 @@ function Home({
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSheetType, setSelectedSheetType] = useState<'all' | 'flat' | 'fitted'>('all');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  
+  // Calculate min and max prices from products
+  const priceRange = useMemo(() => {
+    const prices = products.map(p => p.price);
+    return {
+      min: Math.floor(Math.min(...prices)),
+      max: Math.ceil(Math.max(...prices))
+    };
+  }, []);
+  
+  const [priceRangeFilter, setPriceRangeFilter] = useState<[number, number]>(() => {
+    const prices = products.map(p => p.price);
+    const min = Math.floor(Math.min(...prices));
+    const max = Math.ceil(Math.max(...prices));
+    return [min, max];
+  });
 
   // Generate categories from products
   const categories: Category[] = useMemo(() => {
@@ -198,7 +223,7 @@ function Home({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Filter products based on search and category
+  // Filter products based on search, category, and price
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
@@ -218,8 +243,20 @@ function Home({
       );
     }
 
+    // Filter by price range
+    filtered = filtered.filter((product) =>
+      product.price >= priceRangeFilter[0] && product.price <= priceRangeFilter[1]
+    );
+
+    // Filter by sheet type
+    if (selectedSheetType !== 'all') {
+      filtered = filtered.filter((product) =>
+        product.sheetType === selectedSheetType
+      );
+    }
+
     return filtered;
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, priceRangeFilter, selectedSheetType]);
 
   const handleAddToCart = (product: Product, sheetType?: string) => {
     setCartItems((prev) => {
@@ -284,6 +321,11 @@ function Home({
         onToggleExpand={() => setSidebarExpanded(!sidebarExpanded)}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        priceRange={priceRange}
+        priceRangeFilter={priceRangeFilter}
+        onPriceRangeChange={setPriceRangeFilter}
+        selectedSheetType={selectedSheetType}
+        onSheetTypeChange={setSelectedSheetType}
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-0'}`}>
         <Hero />
@@ -329,7 +371,7 @@ function Home({
       {showScrollToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          className="fixed bottom-6 right-6 z-50 p-3 bg-slate-700 text-white rounded-full shadow-lg hover:bg-slate-800 transition-colors"
           aria-label="Scroll to top"
         >
           <ArrowUp className="w-5 h-5" />

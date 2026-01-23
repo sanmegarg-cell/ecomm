@@ -57,7 +57,7 @@ export function MobileCategoryFilter({
             onClick={() => handleSelect('all')}
             className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
               selectedCategory === 'all'
-                ? 'bg-blue-500 text-white'
+                ? 'bg-slate-700 text-white'
                 : 'hover:bg-gray-100 text-gray-700'
             }`}
           >
@@ -75,7 +75,7 @@ export function MobileCategoryFilter({
               onClick={() => handleSelect(category.id)}
               className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
                 selectedCategory === category.id
-                ? 'bg-blue-500 text-white'
+                ? 'bg-slate-700 text-white'
                   : 'hover:bg-gray-100 text-gray-700'
               }`}
             >

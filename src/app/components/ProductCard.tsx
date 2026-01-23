@@ -18,6 +18,7 @@ export interface Product {
   threadCount: number;
   rating?: number;
   reviews?: Review[];
+  sheetType?: 'flat' | 'fitted';
 }
 
 interface ProductCardProps {
@@ -94,7 +95,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishli
               e.stopPropagation();
               onAddToCart(product);
             }}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+            className="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-2"
           >
             <ShoppingCart className="w-4 h-4" />
             <span className="hidden sm:inline">Add</span>

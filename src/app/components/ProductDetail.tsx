@@ -229,7 +229,7 @@ export function ProductDetail({
                 <div className="space-y-3 pt-4 border-t">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full bg-blue-500 text-white px-6 py-4 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 text-lg"
+                    className="w-full bg-slate-700 text-white px-6 py-4 rounded-lg hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 text-lg"
                   >
                     <ShoppingCart className="w-5 h-5" />
                     Add to Cart
