@@ -32,7 +32,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishli
   const navigate = useNavigate();
   return (
     <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-      <div
+      <div 
         className="relative aspect-square overflow-hidden bg-gray-100 cursor-pointer"
         onClick={() => {
           navigate(`/product/${product.id}`);
@@ -62,7 +62,7 @@ export function ProductCard({ product, onAddToCart, onToggleWishlist, isInWishli
         </button>
       </div>
       <div className="p-4 sm:p-6">
-        <h3
+        <h3 
           className="text-lg sm:text-xl mb-2 cursor-pointer hover:text-blue-600 transition-colors"
           onClick={() => {
             navigate(`/product/${product.id}`);

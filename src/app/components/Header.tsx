@@ -1,4 +1,4 @@
-import { ShoppingCart, Menu, X, Heart, Search } from 'lucide-react';
+import { ShoppingCart, Menu, X, Heart } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeaderProps {
@@ -6,10 +6,9 @@ interface HeaderProps {
   wishlistItemCount: number;
   onCartClick: () => void;
   onWishlistClick: () => void;
-  onSearchClick: () => void;
 }
 
-export function Header({ cartItemCount, wishlistItemCount, onCartClick, onWishlistClick, onSearchClick }: HeaderProps) {
+export function Header({ cartItemCount, wishlistItemCount, onCartClick, onWishlistClick }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -33,14 +32,6 @@ export function Header({ cartItemCount, wishlistItemCount, onCartClick, onWishli
 
           {/* Cart Button */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={onSearchClick}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              aria-label="Search"
-            >
-              <Search className="w-6 h-6" />
-            </button>
-
             <button
               onClick={onWishlistClick}
               className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"

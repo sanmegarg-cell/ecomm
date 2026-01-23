@@ -1,4 +1,4 @@
-import { X, ShoppingCart, Heart, Check, ZoomIn, ArrowLeft } from 'lucide-react';
+import { X, ShoppingCart, Heart, Check, ZoomIn, ArrowLeft, ArrowUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Product } from './ProductCard';
@@ -6,7 +6,6 @@ import { ProductCard } from './ProductCard';
 import { Header } from './Header';
 import { Cart, CartItem } from './Cart';
 import { Wishlist } from './Wishlist';
-import { SearchModal } from './SearchModal';
 
 interface ProductDetailPageProps {
   products: Product[];
@@ -44,8 +43,7 @@ export function ProductDetailPage({
   const [page, setPage] = useState(1);
   const [cartOpen, setCartOpen] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const product = products.find(p => p.id === parseInt(id || '0'));
 
@@ -93,8 +91,21 @@ export function ProductDetailPage({
   };
 
   useEffect(() => {
+    const handleScrollVisibility = () => {
+      if (window.scrollY > 300) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScrollVisibility);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScrollVisibility);
+    };
   }, [isLoading, hasMore, page]);
 
   const handleAddToCart = () => {
@@ -118,6 +129,10 @@ export function ProductDetailPage({
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setZoomPosition({ x, y });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleViewDetails = (recommendedProduct: Product) => {
@@ -155,7 +170,7 @@ export function ProductDetailPage({
         wishlistItemCount={wishlistItems.length}
         onCartClick={() => setCartOpen(true)}
         onWishlistClick={() => setWishlistOpen(true)}
-        onSearchClick={() => setSearchOpen(true)}
+        onSearchClick={() => {}}
       />
 
       {/* Product Detail Section */}
@@ -375,17 +390,19 @@ export function ProductDetailPage({
         onClose={() => setWishlistOpen(false)}
         items={wishlistItems}
         onRemoveItem={onRemoveFromWishlist}
-        onAddToCart={onAddToCart}
+        onAddToCart={(productToAdd) => onAddToCart(productToAdd, 'flat')}
       />
-      <SearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        searchQuery={searchQuery}
-        onSearchChange={(query) => {
-          setSearchQuery(query);
-          navigate(`/?search=${encodeURIComponent(query)}`);
-        }}
-      />
+
+      {/* Scroll to Top Button */}
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
     </div>
   );
 }

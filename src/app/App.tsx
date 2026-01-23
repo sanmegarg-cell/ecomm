@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { ArrowUp } from 'lucide-react';
 import { Header } from '@/app/components/Header';
 import { Hero } from '@/app/components/Hero';
 import { ProductGrid } from '@/app/components/ProductGrid';
 import { Cart, CartItem } from '@/app/components/Cart';
 import { Wishlist } from '@/app/components/Wishlist';
-import { SearchModal } from '@/app/components/SearchModal';
 import { CategoryPanel, Category } from '@/app/components/CategoryPanel';
 import { MobileCategoryFilter } from '@/app/components/MobileCategoryFilter';
 import { ProductDetailPage } from '@/app/components/ProductDetailPage';
@@ -142,11 +142,11 @@ function Home({
   const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   // Generate categories from products
   const categories: Category[] = useMemo(() => {
@@ -180,6 +180,23 @@ function Home({
       count,
     }));
   }, []);
+
+  // Scroll to Top functionality
+  useEffect(() => {
+    const handleScrollVisibility = () => {
+      if (window.scrollY > 300) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScrollVisibility);
+    return () => window.removeEventListener('scroll', handleScrollVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
@@ -258,7 +275,6 @@ function Home({
         wishlistItemCount={wishlistItems.length}
         onCartClick={() => setCartOpen(true)}
         onWishlistClick={() => setWishlistOpen(true)}
-        onSearchClick={() => setSearchOpen(true)}
       />
       <CategoryPanel
         categories={categories}
@@ -266,6 +282,8 @@ function Home({
         onCategorySelect={setSelectedCategory}
         isExpanded={sidebarExpanded}
         onToggleExpand={() => setSidebarExpanded(!sidebarExpanded)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-0'}`}>
         <Hero />
@@ -299,12 +317,6 @@ function Home({
         onRemoveItem={handleRemoveFromWishlist}
         onAddToCart={handleAddToCart}
       />
-      <SearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
       <MobileCategoryFilter
         categories={categories}
         selectedCategory={selectedCategory}
@@ -312,6 +324,17 @@ function Home({
         isOpen={mobileFilterOpen}
         onClose={() => setMobileFilterOpen(false)}
       />
+
+      {/* Scroll to Top Button */}
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 p-3 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
     </div>
   );
 }
