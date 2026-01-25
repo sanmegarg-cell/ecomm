@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "preview": "vite preview",
+    "deploy": "npm run build",
+    "deploy:vercel": "npm run build && vercel --prod",
+    "deploy:netlify": "npm run build && netlify deploy --prod --dir=dist",
+    "deploy:gh-pages": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
