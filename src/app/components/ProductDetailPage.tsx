@@ -1,11 +1,13 @@
-import { X, ShoppingCart, Heart, Check, ZoomIn, ArrowLeft, ArrowUp } from 'lucide-react';
+import { X, ShoppingCart, Heart, Check, ZoomIn, ArrowLeft, ArrowUp, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Product } from './ProductCard';
 import { ProductCard } from './ProductCard';
 import { Header } from './Header';
 import { Cart, CartItem } from './Cart';
 import { Wishlist } from './Wishlist';
+import { processCheckout, CheckoutItem } from '@/app/services/cashfreeCheckout';
 
 interface ProductDetailPageProps {
   products: Product[];
@@ -44,6 +46,7 @@ export function ProductDetailPage({
   const [cartOpen, setCartOpen] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   const product = products.find(p => p.id === parseInt(id || '0'));
 
@@ -114,11 +117,24 @@ export function ProductDetailPage({
     }
   };
 
-  const handleBuyNow = () => {
-    if (product) {
-      onAddToCart(product, sheetType);
-      // In a real app, this would redirect to checkout
-      alert('Proceeding to checkout...');
+  const handleBuyNow = async () => {
+    if (!product) return;
+    
+    setIsProcessingCheckout(true);
+    try {
+      const checkoutItems: CheckoutItem[] = [{
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+      }];
+
+      await processCheckout(checkoutItems);
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Failed to initiate checkout. Please try again.');
+    } finally {
+      setIsProcessingCheckout(false);
     }
   };
 
@@ -338,9 +354,17 @@ export function ProductDetailPage({
               </button>
               <button
                 onClick={handleBuyNow}
-                className="w-full bg-gray-900 text-white px-8 py-5 rounded-lg hover:bg-gray-800 transition-colors text-xl"
+                disabled={isProcessingCheckout}
+                className="w-full bg-gray-900 text-white px-8 py-5 rounded-lg hover:bg-gray-800 transition-colors text-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Buy It Now
+                {isProcessingCheckout ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Buy It Now'
+                )}
               </button>
             </div>
           </div>

@@ -1,5 +1,8 @@
-import { X, Minus, Plus, Trash2, ShoppingCart } from 'lucide-react';
+import { X, Minus, Plus, Trash2, ShoppingCart, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Product } from './ProductCard';
+import { processCheckout, CheckoutItem } from '@/app/services/cashfreeCheckout';
 
 export interface CartItem extends Product {
   quantity: number;
@@ -14,7 +17,30 @@ interface CartProps {
 }
 
 export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = async () => {
+    if (items.length === 0) return;
+
+    setIsProcessing(true);
+    try {
+      const checkoutItems: CheckoutItem[] = items.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+
+      await processCheckout(checkoutItems);
+      // Checkout will open in popup, so we don't close the cart immediately
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Failed to initiate checkout. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -113,8 +139,19 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }:
               <span className="text-lg">Total</span>
               <span className="text-2xl">${total.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-slate-700 text-white py-4 rounded-lg hover:bg-slate-800 transition-colors text-base font-semibold touch-manipulation min-h-[48px]">
-              Checkout
+            <button
+              onClick={handleCheckout}
+              disabled={isProcessing}
+              className="w-full bg-slate-700 text-white py-4 rounded-lg hover:bg-slate-800 transition-colors text-base font-semibold touch-manipulation min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                'Checkout'
+              )}
             </button>
           </div>
         )}

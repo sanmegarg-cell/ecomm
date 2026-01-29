@@ -8,4 +8,8 @@
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
+
+  ## Payment Integration
+
+  This project includes Cashfree payment gateway integration. See [CASHFREE_SETUP.md](./CASHFREE_SETUP.md) for setup instructions.
   

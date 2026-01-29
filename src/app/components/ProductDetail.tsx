@@ -1,6 +1,8 @@
-import { X, ShoppingCart, Heart, Check, ZoomIn } from 'lucide-react';
+import { X, ShoppingCart, Heart, Check, ZoomIn, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Product } from './ProductCard';
+import { processCheckout, CheckoutItem } from '@/app/services/cashfreeCheckout';
 
 interface ProductDetailProps {
   product: Product | null;
@@ -24,6 +26,7 @@ export function ProductDetail({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   if (!isOpen || !product) return null;
 
@@ -34,10 +37,26 @@ export function ProductDetail({
     onAddToCart(product, sheetType);
   };
 
-  const handleBuyNow = () => {
-    onAddToCart(product, sheetType);
-    // In a real app, this would redirect to checkout
-    alert('Proceeding to checkout...');
+  const handleBuyNow = async () => {
+    if (!product) return;
+    
+    setIsProcessingCheckout(true);
+    try {
+      const checkoutItems: CheckoutItem[] = [{
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+      }];
+
+      await processCheckout(checkoutItems);
+      onClose(); // Close the modal after initiating checkout
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Failed to initiate checkout. Please try again.');
+    } finally {
+      setIsProcessingCheckout(false);
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -236,9 +255,17 @@ export function ProductDetail({
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    className="w-full bg-gray-900 text-white px-6 py-4 rounded-lg hover:bg-gray-800 transition-colors text-lg"
+                    disabled={isProcessingCheckout}
+                    className="w-full bg-gray-900 text-white px-6 py-4 rounded-lg hover:bg-gray-800 transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Buy It Now
+                    {isProcessingCheckout ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Buy It Now'
+                    )}
                   </button>
                 </div>
               </div>
