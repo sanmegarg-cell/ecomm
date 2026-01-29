@@ -6,9 +6,13 @@ import { BrowserRouter } from "react-router-dom";
   import { Toaster } from "./app/components/ui/sonner";
 
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
+    <BrowserRouter>
+
+    <React.StrictMode>
     <App />
     <Toaster />
+    </React.StrictMode>
   </BrowserRouter>
 );
   
+
