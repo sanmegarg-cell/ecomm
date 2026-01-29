@@ -6,7 +6,8 @@
   "mimeTypes": {
     ".js": "application/javascript",
     ".mjs": "application/javascript",
-    ".tsx": "application/javascript",
-    ".ts": "application/javascript"
+    ".jsx": "application/javascript",
+    ".ts": "application/javascript",
+    ".tsx": "application/javascript"
   }
 }
